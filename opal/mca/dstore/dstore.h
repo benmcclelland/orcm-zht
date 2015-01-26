@@ -188,9 +188,51 @@ typedef struct {
     opal_dstore_base_module_remove_fn_t          remove;
 } opal_dstore_base_module_t;
 
+
+
+/* initialize as a ZHT client */
+typedef int (*opal_dstore_zht_module_init_fn_t)(const char *zht_config,
+                                                const char *zht_member_list);
+
+/* finalize and tear down the ZHT client connection */
+typedef int (*opal_dstore_zht_module_finalize_fn_t)(void);
+
+/* insert a record to ZHT */
+typedef int (*opal_dstore_zht_module_insert_fn_t)(const char *key,
+                                                  const char *value);
+
+/* lookup a record from ZHT */
+typedef int (*opal_dstore_zht_module_lookup_fn_t)(const char *key,
+                                                  char *value);
+
+/* remove a record from ZHT */
+typedef int (*opal_dstore_zht_module_remove_fn_t)(const char *key);
+
+/* atomic compare and swap to update a record in ZHT */
+typedef int (*opal_dstore_zht_module_cswap_fn_t)(const char *key,
+                                                 const char *seen_value,
+                                                 const char *new_value,
+                                                 char *query_value);
+
+/* state change callback condition check from ZHT */
+typedef int (*opal_dstore_zht_module_callback_fn_t)(const char *key,
+                                                    const char *expect_value,
+                                                    long lease);
+
 /*
- * the component data structure
+ * the ZHT component data structure
  */
+typedef struct {
+	opal_dstore_zht_module_init_fn_t          init;
+	opal_dstore_zht_module_finalize_fn_t      finalize;
+	opal_dstore_zht_module_insert_fn_t        insert;
+	opal_dstore_zht_module_lookup_fn_t        lookup;
+	opal_dstore_zht_module_remove_fn_t        remove;
+	opal_dstore_zht_module_cswap_fn_t         cswap;
+	opal_dstore_zht_module_callback_fn_t      callback;
+} opal_dstore_zht_module_t;
+
+typedef opal_dstore_zht_module_t opal_dstore_zht_module_t;
 
 /* create and return a datastore module */
 typedef opal_dstore_base_module_t* (*mca_dstore_base_component_create_hdl_fn_t)(opal_list_t *attributes);
