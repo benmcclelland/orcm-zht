@@ -104,8 +104,8 @@ static bool log_enabled = true;
 
 
 char ipmi_inv_tv[5][2][30] = {
-{"bmc_ver","TV_bmc_ver"},
-{"ipmi_ver","TV_ipmi_ver"},
+{"bmc_ver","9.9"},
+{"ipmi_ver","8.8"},
 {"bb_serial","TV_BbSer"},
 {"bb_vendor","TV_BbVen"},
 {"bb_manufactured_date","TV_MaufDat"}};
@@ -606,6 +606,11 @@ static bool compare_ipmi_record (ipmi_inventory_t* newhost , ipmi_inventory_t* o
                     opal_output(0,"IPMI inventory records mismatch: value.data.string mismatch");
                     return false;
                 }
+            } else if ((OPAL_FLOAT == newitem->value.type)){
+                if(newitem->value.data.fval != olditem->value.data.fval) {
+                    opal_output(0,"IPMI inventory records mismatch: value.data.fval mismatch");
+                    return false;
+                }
             } else {
                 opal_output(0,"Invalid data stored as inventory with invalid data type %d", newitem->value.type);
                 return false;
@@ -649,11 +654,17 @@ static void ipmi_inventory_log(char *hostname, opal_buffer_t *inventory_snapshot
         /* opal_output(0,"%s: %s",inv, inv_val);*/
         
         mkv = OBJ_NEW(orcm_metric_value_t);
-        mkv->value.type = OPAL_STRING;
         mkv->value.key = inv;
-        mkv->value.data.string = inv_val;
+
+        if(!strncmp(inv,"bmc_ver",sizeof("bmc_ver")) | !strncmp(inv,"ipmi_ver",sizeof("ipmi_ver")))
+        {
+            mkv->value.type = OPAL_FLOAT;
+            mkv->value.data.fval = strtof(inv_val,NULL);
+        } else {
+            mkv->value.type = OPAL_STRING;
+            mkv->value.data.string = inv_val;
+        }
         opal_list_append(newhost->records, (opal_list_item_t *)mkv);
-        
         tot_items--;
     }
 
@@ -667,9 +678,16 @@ static void ipmi_inventory_log(char *hostname, opal_buffer_t *inventory_snapshot
             oldhost->records=OBJ_NEW(opal_list_t);
             OPAL_LIST_FOREACH(mkv, newhost->records, orcm_metric_value_t) {
                 mkv_copy = OBJ_NEW(orcm_metric_value_t);
-                mkv_copy->value.type = mkv->value.type;
                 mkv_copy->value.key = strdup(mkv->value.key);
-                mkv_copy->value.data.string = strdup(mkv->value.data.string);
+
+                if(!strncmp(mkv->value.key,"bmc_ver",sizeof("bmc_ver")) | !strncmp(mkv->value.key,"ipmi_ver",sizeof("ipmi_ver")))
+                {
+                    mkv_copy->value.type = OPAL_FLOAT;
+                    mkv_copy->value.data.fval = mkv->value.data.fval;
+                } else {
+                    mkv_copy->value.type = OPAL_STRING;
+                    mkv_copy->value.data.string = strdup(mkv->value.data.string);
+                }
                 opal_list_append(oldhost->records,(opal_list_item_t *)mkv_copy);   
             }
             /* Send the collected inventory details to the database for storage */
