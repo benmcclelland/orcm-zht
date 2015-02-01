@@ -14,6 +14,7 @@
 #include "orcm/constants.h"
 
 #include <stdio.h>
+#include <ctype.h>
 
 #include "opal/dss/dss.h"
 #include "opal/mca/mca.h"
@@ -57,11 +58,13 @@ int orcm_octl_queue_acl(char **argv);
 int orcm_octl_queue_priority(char **argv);
 int orcm_octl_session_status(char **argv);
 int orcm_octl_session_cancel(char **argv);
+int orcm_octl_session_set(int cmd, char **argv);
+int orcm_octl_session_get(int cmd, char **argv);
 int orcm_octl_diag_cpu(char **argv);
 int orcm_octl_diag_eth(char **argv);
 int orcm_octl_diag_mem(char **argv);
-int orcm_octl_power_set(char **argv);
-int orcm_octl_power_get(char **argv);
+int orcm_octl_power_set(int cmd, char **argv);
+int orcm_octl_power_get(int cmd, char **argv);
 
 END_C_DECLS
 

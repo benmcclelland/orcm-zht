@@ -314,6 +314,40 @@ static void orcm_scd_base_rm_recv(int status, orte_process_name_t* sender,
             }
         }
         opal_output(0, "scheduler: couldn't find running allocation to cancel : %ld!\n", (long)alloc->id);
+    } else if (ORCM_SET_POWER_COMMAND == command) {
+        OPAL_OUTPUT_VERBOSE((5, orcm_scd_base_framework.framework_output,
+                             "%s scd:base:rm:receive got ORCM_SET_POWER_COMMAND",
+                             ORTE_NAME_PRINT(ORTE_PROC_MY_NAME)));
+        cnt = 1;
+        if (OPAL_SUCCESS != (rc = opal_dss.unpack(buffer, &alloc,
+                                                  &cnt, ORCM_ALLOC))) {
+            ORTE_ERROR_LOG(rc);
+            return;
+        }
+
+        ans = OBJ_NEW(opal_buffer_t);
+
+        if (OPAL_SUCCESS != (rc = opal_dss.pack(ans, &command,
+                                            1, ORCM_RM_CMD_T))) {
+            ORTE_ERROR_LOG(rc);
+            OBJ_RELEASE(ans);
+            return;
+        }
+        if (OPAL_SUCCESS != (rc = opal_dss.pack(ans, &alloc,
+                                                1, ORCM_ALLOC))) {
+            ORTE_ERROR_LOG(rc);
+            OBJ_RELEASE(ans);
+            return;
+        }
+
+        if (ORTE_SUCCESS !=
+            (rc = orte_rml.send_buffer_nb(&alloc->hnp, ans,
+                                          ORCM_RML_TAG_PWRMGMT_BASE,
+                                          orte_rml_send_callback, NULL))) {
+            ORTE_ERROR_LOG(rc);
+            OBJ_RELEASE(ans);
+            return;
+        }
     }
 
     return;

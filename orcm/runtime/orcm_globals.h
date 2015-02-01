@@ -76,16 +76,36 @@ typedef int8_t orcm_node_state_t;
 typedef uint8_t orcm_rm_cmd_flag_t;
 #define ORCM_RM_CMD_T OPAL_UINT8
 
-#define ORCM_NODESTATE_REQ_COMMAND    1
-#define ORCM_RESOURCE_REQ_COMMAND     2
-#define ORCM_NODESTATE_UPDATE_COMMAND 3
-#define ORCM_VM_READY_COMMAND         4
-#define ORCM_LAUNCH_STEPD_COMMAND     5
-#define ORCM_CANCEL_STEPD_COMMAND     6
-#define ORCM_STEPD_COMPLETE_COMMAND   7
-#define ORCM_CALIBRATE_COMMAND        8
-#define ORCM_SET_POWER_BUDGET_COMMAND 9
-#define ORCM_GET_POWER_BUDGET_COMMAND 10
+#define ORCM_NODESTATE_REQ_COMMAND           1
+#define ORCM_RESOURCE_REQ_COMMAND            2
+#define ORCM_NODESTATE_UPDATE_COMMAND        3
+#define ORCM_VM_READY_COMMAND                4
+#define ORCM_LAUNCH_STEPD_COMMAND            5
+#define ORCM_CANCEL_STEPD_COMMAND            6
+#define ORCM_STEPD_COMPLETE_COMMAND          7
+#define ORCM_CALIBRATE_COMMAND               8
+#define ORCM_SET_POWER_COMMAND               9
+#define ORCM_GET_POWER_COMMAND               10
+#define ORCM_SET_POWER_BUDGET_COMMAND        11
+#define ORCM_SET_POWER_MODE_COMMAND          12
+#define ORCM_SET_POWER_WINDOW_COMMAND        13
+#define ORCM_SET_POWER_OVERAGE_COMMAND       14
+#define ORCM_SET_POWER_UNDERAGE_COMMAND      15
+#define ORCM_SET_POWER_OVERAGE_TIME_COMMAND  16
+#define ORCM_SET_POWER_UNDERAGE_TIME_COMMAND 17
+#define ORCM_SET_POWER_FREQUENCY_COMMAND     18
+#define ORCM_SET_POWER_STRICT_COMMAND        19
+#define ORCM_GET_POWER_BUDGET_COMMAND        20
+#define ORCM_GET_POWER_MODE_COMMAND          21
+#define ORCM_GET_POWER_WINDOW_COMMAND        22
+#define ORCM_GET_POWER_OVERAGE_COMMAND       23
+#define ORCM_GET_POWER_UNDERAGE_COMMAND      24
+#define ORCM_GET_POWER_OVERAGE_TIME_COMMAND  25
+#define ORCM_GET_POWER_UNDERAGE_TIME_COMMAND 26
+#define ORCM_GET_POWER_FREQUENCY_COMMAND     27
+#define ORCM_GET_POWER_MODES_COMMAND         28
+#define ORCM_GET_POWER_STRICT_COMMAND        29
+
 
 /* define diagnostic commands */
 typedef uint8_t orcm_diag_cmd_flag_t;
@@ -110,19 +130,23 @@ ORCM_DECLSPEC extern int orcm_debug_verbosity;
 
 /* extend the ORTE RML tags to add ORCM DAEMONS tags */
 /* scheduler */
-#define ORCM_RML_TAG_SCD       (ORTE_RML_TAG_MAX + 1)
-#define ORCM_RML_TAG_RM        (ORTE_RML_TAG_MAX + 2)
+#define ORCM_RML_TAG_SCD           (ORTE_RML_TAG_MAX + 1)
+#define ORCM_RML_TAG_RM            (ORTE_RML_TAG_MAX + 2)
 /* session daemons */
-#define ORCM_RML_TAG_HNP       (ORTE_RML_TAG_MAX + 3)
-#define ORCM_RML_TAG_DAEMON    (ORTE_RML_TAG_MAX + 4)
+#define ORCM_RML_TAG_HNP           (ORTE_RML_TAG_MAX + 3)
+#define ORCM_RML_TAG_DAEMON        (ORTE_RML_TAG_MAX + 4)
 /* analytics */
-#define ORCM_RML_TAG_ANALYTICS (ORTE_RML_TAG_MAX + 5)
+#define ORCM_RML_TAG_ANALYTICS     (ORTE_RML_TAG_MAX + 5)
 /* tools */
-#define ORCM_RML_TAG_VM_READY  (ORTE_RML_TAG_MAX + 6)
+#define ORCM_RML_TAG_VM_READY      (ORTE_RML_TAG_MAX + 6)
 /* diagnostics */
-#define ORCM_RML_TAG_DIAG      (ORTE_RML_TAG_MAX + 7)
+#define ORCM_RML_TAG_DIAG          (ORTE_RML_TAG_MAX + 7)
 /* Inventory */
-#define ORCM_RML_TAG_INVENTORY (ORTE_RML_TAG_MAX + 8)
+#define ORCM_RML_TAG_INVENTORY     (ORTE_RML_TAG_MAX + 8)
+/* pwrmgmt base */
+#define ORCM_RML_TAG_PWRMGMT_BASE  (ORTE_RML_TAG_MAX + 9)
+/* autotuner */
+#define ORCM_RML_TAG_AT            (ORTE_RML_TAG_MAX + 10)
 
 /* define event base priorities */
 #define ORCM_SCHED_PRI OPAL_EV_MSG_HI_PRI
